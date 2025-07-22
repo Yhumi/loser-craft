@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "yhumi.losercraft.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"BedBlockMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}
