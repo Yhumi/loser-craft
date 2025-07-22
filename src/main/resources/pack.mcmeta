@@ -1,0 +1,10 @@
+{
+    "pack": {
+        "pack_format": 81,
+        "description": "Remove mending enchantment from Vanilla Minecraft.",
+        "supported_formats": {
+            "min_inclusive": 57,
+            "max_inclusive": 81
+        }
+    }
+}

@@ -3,7 +3,10 @@
 	"package": "yhumi.losercraft.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"BedBlockMixin"
+		"BedBlockMixin",
+		"CreativeModeTabMixin",
+		"FireworkRocketEntityMixin",
+		"FireworkRocketItemMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -17,19 +17,12 @@
 		"main": [
 			"yhumi.losercraft.Losercraft"
 		],
-		"client": [
-			"yhumi.losercraft.LosercraftClient"
-		],
 		"fabric-datagen": [
 			"yhumi.losercraft.LosercraftDataGenerator"
 		]
 	},
 	"mixins": [
-		"loser-craft.mixins.json",
-		{
-			"config": "loser-craft.client.mixins.json",
-			"environment": "client"
-		}
+		"loser-craft.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.16.14",
