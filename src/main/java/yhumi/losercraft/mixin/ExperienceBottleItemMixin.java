@@ -14,7 +14,6 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.stats.Stats;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -38,8 +37,6 @@ import yhumi.losercraft.LosercraftExperienceOrbDuck;
 public class ExperienceBottleItemMixin extends Item {
     private static final int FULL_BAR_COLOR = ARGB.colorFromFloat(1.0F, 1.0F, 0.33F, 0.33F);
 	private static final int BAR_COLOR = ARGB.colorFromFloat(1.0F, 0.44F, 0.53F, 1.0F);
-
-    
 
     public ExperienceBottleItemMixin(Item.Properties properties) {
         super(properties);
