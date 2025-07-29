@@ -5,7 +5,10 @@
 	"mixins": [
 		"BedBlockMixin",
 		"CreativeModeTabMixin",
-		"FireworkRocketEntityMixin"
+		"ExperienceBottleItemMixin",
+		"ExperienceOrbMixin",
+		"FireworkRocketEntityMixin",
+		"LivingEntitiyMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

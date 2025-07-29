@@ -11,5 +11,6 @@ public class Losercraft implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		LosercraftDataCompontents.initialize();
 	}
 }
