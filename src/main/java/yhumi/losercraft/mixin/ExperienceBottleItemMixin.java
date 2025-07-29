@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.math.Fraction;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -13,6 +14,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -23,6 +25,8 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ExperienceBottleItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import yhumi.losercraft.Losercraft;
@@ -74,15 +78,24 @@ public class ExperienceBottleItemMixin extends Item {
                 orb.discard();
             }
 
-            itemStack.set(LosercraftDataCompontents.EXP_HELD, Math.min(MAX_EXPERIENCE_IN_BOTTLE, experienceAmountHeld + experienceToBeAdded));
-
-            Losercraft.LOGGER.info("Experience Bottle Value: {}", itemStack.getOrDefault(LosercraftDataCompontents.EXP_HELD, 0));
-            ci.setReturnValue(InteractionResult.SUCCESS);
+            ItemStack itemStack2 = this.fillExperienceBottleFromStack(itemStack, player, Math.min(MAX_EXPERIENCE_IN_BOTTLE, experienceAmountHeld + experienceToBeAdded));
+            Losercraft.LOGGER.info("Experience Bottle Value: {}", itemStack2.getOrDefault(LosercraftDataCompontents.EXP_HELD, 0));
+            ci.setReturnValue(InteractionResult.SUCCESS.heldItemTransformedTo(itemStack2));
             return;
         }
 
         ci.setReturnValue(InteractionResult.FAIL);
     }
+
+    @Unique
+    protected ItemStack fillExperienceBottleFromStack(ItemStack itemStack, Player player, int newStackValue) {
+		//player.awardStat(Stats.ITEM_USED.get(this));
+        ItemStack itemStackTemp = new ItemStack(Items.EXPERIENCE_BOTTLE);
+        itemStackTemp.set(LosercraftDataCompontents.EXP_HELD, newStackValue);
+
+		ItemStack itemStack3 = ItemUtils.createFilledResult(itemStack, player, itemStackTemp);
+        return itemStack3;
+	}
 
     @Override
     public boolean isBarVisible(ItemStack itemStack) {
