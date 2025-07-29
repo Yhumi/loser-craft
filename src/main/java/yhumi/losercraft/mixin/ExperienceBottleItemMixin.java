@@ -39,7 +39,7 @@ public class ExperienceBottleItemMixin extends Item {
     private static final int FULL_BAR_COLOR = ARGB.colorFromFloat(1.0F, 1.0F, 0.33F, 0.33F);
 	private static final int BAR_COLOR = ARGB.colorFromFloat(1.0F, 0.44F, 0.53F, 1.0F);
 
-    private final int MAX_EXPERIENCE_IN_BOTTLE = 465;
+    
 
     public ExperienceBottleItemMixin(Item.Properties properties) {
         super(properties);
@@ -60,16 +60,13 @@ public class ExperienceBottleItemMixin extends Item {
 
         if (!orbs.isEmpty()) {
             int experienceAmountHeld = itemStack.getOrDefault(LosercraftDataCompontents.EXP_HELD, 0);
-            if (experienceAmountHeld >= MAX_EXPERIENCE_IN_BOTTLE) {
+            if (experienceAmountHeld >= Losercraft.MAX_EXPERIENCE_IN_BOTTLE) {
                 ci.setReturnValue(InteractionResult.FAIL);
                 return;
             }
 
             ExperienceOrb orb = (ExperienceOrb) orbs.get(0);
-            int experienceToBeAdded = Math.min(MAX_EXPERIENCE_IN_BOTTLE - experienceAmountHeld, orb.getValue());
-
-            Losercraft.LOGGER.info("Orb value: {}", orb.getValue());
-            Losercraft.LOGGER.info("Experience To Be Added: {}", experienceToBeAdded);
+            int experienceToBeAdded = Math.min(Losercraft.MAX_EXPERIENCE_IN_BOTTLE - experienceAmountHeld, orb.getValue());
 
             if (orb.getValue() > experienceToBeAdded) {
                 ((LosercraftExperienceOrbDuck)orb).updateValue(orb.getValue() - experienceToBeAdded);
@@ -78,8 +75,7 @@ public class ExperienceBottleItemMixin extends Item {
                 orb.discard();
             }
 
-            ItemStack itemStack2 = this.fillExperienceBottleFromStack(itemStack, player, Math.min(MAX_EXPERIENCE_IN_BOTTLE, experienceAmountHeld + experienceToBeAdded));
-            Losercraft.LOGGER.info("Experience Bottle Value: {}", itemStack2.getOrDefault(LosercraftDataCompontents.EXP_HELD, 0));
+            ItemStack itemStack2 = this.fillExperienceBottleFromStack(itemStack, player, Math.min(Losercraft.MAX_EXPERIENCE_IN_BOTTLE, experienceAmountHeld + experienceToBeAdded));
             ci.setReturnValue(InteractionResult.SUCCESS.heldItemTransformedTo(itemStack2));
             return;
         }
@@ -100,19 +96,19 @@ public class ExperienceBottleItemMixin extends Item {
     @Override
     public boolean isBarVisible(ItemStack itemStack) {
 		int experienceHeld = itemStack.getOrDefault(LosercraftDataCompontents.EXP_HELD, 0);
-		return MAX_EXPERIENCE_IN_BOTTLE - experienceHeld > 0;
+		return Losercraft.MAX_EXPERIENCE_IN_BOTTLE - experienceHeld > 0;
 	}
 
     @Override
 	public int getBarWidth(ItemStack itemStack) {
 		int experienceHeld = itemStack.getOrDefault(LosercraftDataCompontents.EXP_HELD, 0);
-		return Math.min(Mth.mulAndTruncate(Fraction.getFraction(experienceHeld, MAX_EXPERIENCE_IN_BOTTLE), 13), 13);
+		return Math.min(Mth.mulAndTruncate(Fraction.getFraction(experienceHeld, Losercraft.MAX_EXPERIENCE_IN_BOTTLE), 13), 13);
 	}
 
 	@Override
 	public int getBarColor(ItemStack itemStack) {
 		int experienceHeld = itemStack.getOrDefault(LosercraftDataCompontents.EXP_HELD, 0);
-		return Fraction.getFraction(experienceHeld, MAX_EXPERIENCE_IN_BOTTLE).compareTo(Fraction.ONE) >= 0 ? FULL_BAR_COLOR : BAR_COLOR;
+		return Fraction.getFraction(experienceHeld, Losercraft.MAX_EXPERIENCE_IN_BOTTLE).compareTo(Fraction.ONE) >= 0 ? FULL_BAR_COLOR : BAR_COLOR;
 	}
 
     @Override
