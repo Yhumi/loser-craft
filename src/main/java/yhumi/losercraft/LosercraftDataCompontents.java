@@ -11,7 +11,7 @@ public class LosercraftDataCompontents {
         Registry.register(
             BuiltInRegistries.DATA_COMPONENT_TYPE,
             ResourceLocation.fromNamespaceAndPath(Losercraft.MOD_ID, "experience_held"),
-            DataComponentType.<Integer>builder().persistent(ExtraCodecs.POSITIVE_INT).build()
+            DataComponentType.<Integer>builder().persistent(ExtraCodecs.NON_NEGATIVE_INT).build()
         );
 
     protected static void initialize() {
