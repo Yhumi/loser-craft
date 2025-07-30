@@ -6,14 +6,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import yhumi.losercraft.Losercraft;
 import yhumi.losercraft.LosercraftDataCompontents;
+import yhumi.losercraft.block.LosercraftBlocks;
 import yhumi.losercraft.block.custom.LosercraftExperienceCauldron;
 
 public class LosercraftExperienceCauldronBlockEntity extends BlockEntity {
@@ -76,8 +80,38 @@ public class LosercraftExperienceCauldronBlockEntity extends BlockEntity {
 
     }
 
-    public void fillBottleFromCauldron(Level level, BlockState cauldronBlockState, BlockPos pos, ItemStack interactingItem) {
+    /**
+     * Helper method to remove experience from the Cauldron and add it into a bottle.
+     * This should work agnostically of Glass/Experience bottle.
+     * 
+     * @param level
+     * @param cauldronBlockState
+     * @param pos
+     * @param interactingItem
+     * @return The amount of experience to set the bottle to. -1 for no change.
+     */
+    public int fillBottleFromCauldron(Level level, BlockState cauldronBlockState, BlockPos pos, ItemStack interactingItem) {
+        int bottleAmount = interactingItem.getOrDefault(LosercraftDataCompontents.EXP_HELD, 0);
+        int remainingSpaceInBottle = Losercraft.MAX_EXPERIENCE_IN_BOTTLE - bottleAmount;
 
+        if (remainingSpaceInBottle <= 0) {
+            return -1; 
+        }
+
+        int amountToAdd = Math.min(remainingSpaceInBottle, experienceHeld);
+
+        experienceHeld -= amountToAdd;
+        this.setChanged();
+
+        if (experienceHeld <= 0) {
+            BlockState blockState2 = Blocks.CAULDRON.defaultBlockState();
+            level.setBlockAndUpdate(pos, blockState2);
+            level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(blockState2));
+        } else {
+            updateFillLevelFromExperienceHeld(level, cauldronBlockState, pos);
+        }
+
+        return bottleAmount + amountToAdd;
     }
 
     public void updateFillLevelFromExperienceHeld(Level level, BlockState cauldronBlockState, BlockPos pos) {

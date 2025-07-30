@@ -33,9 +33,6 @@ public interface LosercraftExperienceCauldronInteraction extends CauldronInterac
 		return interactionMap;
     }
 
-    /*TODO: Implement interactions with items:
-    Empty bottle - Take experience from the cauldron.
-    In all cases we should take/add as much as possible to the item/cauldron being filled.*/
     public static void bootStrap() { 
         Map<Item, CauldronInteraction> map = EXPERIENCE_CAULDRON_BEHAVIOR.map();
 
@@ -43,31 +40,49 @@ public interface LosercraftExperienceCauldronInteraction extends CauldronInterac
             if (!(level.getBlockEntity(blockPos) instanceof LosercraftExperienceCauldronBlockEntity losercraftExperienceCauldronBlockEntity)) {
                 return InteractionResult.FAIL;
             }
-
+            
             if (losercraftExperienceCauldronBlockEntity.getExperienceHeld() >= Losercraft.MAX_EXPERIENCE_IN_CAULDRON) {
-                return InteractionResult.TRY_WITH_EMPTY_HAND;
+                return InteractionResult.FAIL;
             }
 
-            if (player.isCrouching()) {
-                //TODO: Take from cauldron when player is crouching
-            } else {
-                if (!level.isClientSide) {
-                    int experienceLeftInBottle = losercraftExperienceCauldronBlockEntity.addExperienceToCauldronFromExperienceBottle(level, blockPos, itemStack);
-                    losercraftExperienceCauldronBlockEntity.updateFillLevelFromExperienceHeld(level, blockState, blockPos);
-                    ItemStack newStack = alterExperienceBottleFromStack(itemStack, player, experienceLeftInBottle);
+            if (!level.isClientSide) {
+                int experienceLeftInBottle = losercraftExperienceCauldronBlockEntity.addExperienceToCauldronFromExperienceBottle(level, blockPos, itemStack);
+                losercraftExperienceCauldronBlockEntity.updateFillLevelFromExperienceHeld(level, blockState, blockPos);
+                ItemStack newStack = alterExperienceBottleFromStack(itemStack, player, experienceLeftInBottle);
 
-                    if (!player.getItemInHand(interactionHand).is(Items.AIR)) {
-                        return InteractionResult.SUCCESS.heldItemTransformedTo(newStack);
-                    }
-                    else {
-                        player.setItemInHand(interactionHand, newStack);
-                    }
+                if (!player.getItemInHand(interactionHand).is(Items.AIR)) {
+                    return InteractionResult.SUCCESS.heldItemTransformedTo(newStack);
                 }
-                
-                return InteractionResult.SUCCESS;
+                else {
+                    player.setItemInHand(interactionHand, newStack);
+                }
+            }
+            
+            return InteractionResult.SUCCESS;
+        });
+
+        map.put(Items.GLASS_BOTTLE, (CauldronInteraction)(blockState, level, blockPos, player, interactionHand, itemStack) -> {
+            if (!(level.getBlockEntity(blockPos) instanceof LosercraftExperienceCauldronBlockEntity losercraftExperienceCauldronBlockEntity)) {
+                return InteractionResult.FAIL;
             }
 
-            return InteractionResult.FAIL;
+            if (losercraftExperienceCauldronBlockEntity.getExperienceHeld() <= 0) {
+                return InteractionResult.FAIL;
+            }
+
+            if (!level.isClientSide) {
+                int experienceLeftInBottle = losercraftExperienceCauldronBlockEntity.fillBottleFromCauldron(level, blockState, blockPos, itemStack);
+                ItemStack newStack = alterExperienceBottleFromStack(itemStack, player, experienceLeftInBottle);
+
+                if (!player.getItemInHand(interactionHand).is(Items.AIR)) {
+                    return InteractionResult.SUCCESS.heldItemTransformedTo(newStack);
+                }
+                else {
+                    player.setItemInHand(interactionHand, newStack);
+                }
+            }
+
+            return InteractionResult.SUCCESS;
         });
     }
 
