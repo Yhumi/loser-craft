@@ -34,6 +34,6 @@ public class LosercraftBlocks {
     }
 
     public static void initialize() {
-        Losercraft.LOGGER.info("Registering ModBlocks for {}", Losercraft.MOD_ID);
+        Losercraft.LOGGER.info("Registering {} Blocks", Losercraft.MOD_ID);
     }
 }

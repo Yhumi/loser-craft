@@ -15,7 +15,9 @@ import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import yhumi.losercraft.Losercraft;
 import yhumi.losercraft.LosercraftDataCompontents;
+import yhumi.losercraft.block.custom.entity.LosercraftExperienceCauldronBlockEntity;
 
 public interface LosercraftExperienceCauldronInteraction extends CauldronInteraction {
     Map<String, CauldronInteraction.InteractionMap> INTERACTIONS = new Object2ObjectArrayMap<>();
@@ -38,12 +40,20 @@ public interface LosercraftExperienceCauldronInteraction extends CauldronInterac
         Map<Item, CauldronInteraction> map = EXPERIENCE_CAULDRON_BEHAVIOR.map();
 
         map.put(Items.EXPERIENCE_BOTTLE, (CauldronInteraction)(blockState, level, blockPos, player, interactionHand, itemStack) -> {
+            if (!(level.getBlockEntity(blockPos) instanceof LosercraftExperienceCauldronBlockEntity losercraftExperienceCauldronBlockEntity)) {
+                return InteractionResult.FAIL;
+            }
+
+            if (losercraftExperienceCauldronBlockEntity.getExperienceHeld() >= Losercraft.MAX_EXPERIENCE_IN_CAULDRON) {
+                return InteractionResult.TRY_WITH_EMPTY_HAND;
+            }
+
             if (player.isCrouching()) {
                 //TODO: Take from cauldron when player is crouching
             } else {
                 if (!level.isClientSide) {
-                    int experienceLeftInBottle = LosercraftExperienceCauldron.addExperienceToCauldronFromExperienceBottle(level, blockState, blockPos, itemStack);
-                    LosercraftExperienceCauldron.updateFillLevelFromExperienceHeld(level, blockState, blockPos);
+                    int experienceLeftInBottle = losercraftExperienceCauldronBlockEntity.addExperienceToCauldronFromExperienceBottle(level, blockPos, itemStack);
+                    losercraftExperienceCauldronBlockEntity.updateFillLevelFromExperienceHeld(level, blockState, blockPos);
                     ItemStack newStack = alterExperienceBottleFromStack(itemStack, player, experienceLeftInBottle);
 
                     return InteractionResult.SUCCESS.heldItemTransformedTo(newStack);
