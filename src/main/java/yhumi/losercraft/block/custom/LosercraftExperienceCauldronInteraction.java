@@ -56,7 +56,12 @@ public interface LosercraftExperienceCauldronInteraction extends CauldronInterac
                     losercraftExperienceCauldronBlockEntity.updateFillLevelFromExperienceHeld(level, blockState, blockPos);
                     ItemStack newStack = alterExperienceBottleFromStack(itemStack, player, experienceLeftInBottle);
 
-                    return InteractionResult.SUCCESS.heldItemTransformedTo(newStack);
+                    if (!player.getItemInHand(interactionHand).is(Items.AIR)) {
+                        return InteractionResult.SUCCESS.heldItemTransformedTo(newStack);
+                    }
+                    else {
+                        player.setItemInHand(interactionHand, newStack);
+                    }
                 }
                 
                 return InteractionResult.SUCCESS;
@@ -81,4 +86,6 @@ public interface LosercraftExperienceCauldronInteraction extends CauldronInterac
 		ItemStack itemStack3 = ItemUtils.createFilledResult(itemStack, player, itemStackTemp);
         return itemStack3;
 	}
+
+    
 }

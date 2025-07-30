@@ -10,6 +10,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import yhumi.losercraft.Losercraft;
 import yhumi.losercraft.LosercraftDataCompontents;
 import yhumi.losercraft.block.custom.LosercraftExperienceCauldron;
@@ -22,15 +24,25 @@ public class LosercraftExperienceCauldronBlockEntity extends BlockEntity {
 	}
 
     @Override
-    protected void applyImplicitComponents(DataComponentGetter dataComponentGetter) {
+    public void loadAdditional(ValueInput input) {
+        this.experienceHeld = input.getIntOr("experience_held", 0);
+    }
+
+    @Override
+    public void saveAdditional(ValueOutput output) {
+        output.putInt("experience_held", experienceHeld);
+    }
+
+    @Override
+    public void applyImplicitComponents(DataComponentGetter dataComponentGetter) {
         super.applyImplicitComponents(dataComponentGetter);
         this.experienceHeld = dataComponentGetter.getOrDefault(LosercraftDataCompontents.EXP_HELD, 0);
     }
 
     @Override
-    protected void collectImplicitComponents(DataComponentMap.Builder builder) {
-        super.collectImplicitComponents(builder);
+    public void collectImplicitComponents(DataComponentMap.Builder builder) {
         builder.set(LosercraftDataCompontents.EXP_HELD, experienceHeld);
+        super.collectImplicitComponents(builder);
     }
 
     public int getExperienceHeld() {
@@ -54,6 +66,8 @@ public class LosercraftExperienceCauldronBlockEntity extends BlockEntity {
         int amountTakenFromBottle = Math.min(newCauldronAmount - originalCauldronAmount, bottleAmount);
 
         experienceHeld = newCauldronAmount;
+        this.setChanged();
+
         return bottleAmount - amountTakenFromBottle;
     }
 

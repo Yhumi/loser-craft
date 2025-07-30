@@ -44,7 +44,7 @@ public interface CauldronInteractionMixin {
                 if (!level.isClientSide) {
                     player.awardStat(Stats.USE_CAULDRON);
                     level.setBlockAndUpdate(blockPos, LosercraftBlocks.EXPERIENCE_CAULDRON.defaultBlockState());
-                    
+
                     if (!(level.getBlockEntity(blockPos) instanceof LosercraftExperienceCauldronBlockEntity losercraftExperienceCauldronBlockEntity)) {
                         //Catastrophicly bad.
                         level.setBlockAndUpdate(blockPos, Blocks.CAULDRON.defaultBlockState());
@@ -62,7 +62,13 @@ public interface CauldronInteractionMixin {
                     level.playSound(null, blockPos, SoundEvents.BOTTLE_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
                     level.gameEvent(null, GameEvent.FLUID_PLACE, blockPos);
 
-                    return InteractionResult.SUCCESS.heldItemTransformedTo(newStack);
+                    Losercraft.LOGGER.info(player.getItemInHand(interactionHand).toString());
+                    if (player.getItemInHand(interactionHand) != null) {
+                        return InteractionResult.SUCCESS.heldItemTransformedTo(newStack);
+                    }
+                    else {
+                        player.setItemInHand(interactionHand, newStack);
+                    }
                 }
 
                 return InteractionResult.SUCCESS;
