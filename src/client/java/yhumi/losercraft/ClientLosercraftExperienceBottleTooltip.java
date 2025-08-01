@@ -48,11 +48,7 @@ public class ClientLosercraftExperienceBottleTooltip implements ClientTooltipCom
 
     @Override
 	public void renderImage(Font font, int i, int j, int k, int l, GuiGraphics guiGraphics) {
-		if (this.experienceHeld == 0) {
-			this.drawProgressbar(i + this.getContentXOffset(k), j + 4, font, guiGraphics);
-		} else {
-			this.drawProgressbar(i + this.getContentXOffset(k), j + 4, font, guiGraphics);
-		}
+		this.drawProgressbar(i + this.getContentXOffset(k), j + 4, font, guiGraphics);
 	}
 
     private void drawProgressbar(int i, int j, Font font, GuiGraphics guiGraphics) {
